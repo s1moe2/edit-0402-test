@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const services = require("./services");
+const { isSchema } = require("joi");
+const schemas = require("./schemas");
 
 router.get("/", async (req, res) => {
   const polls = await services.getAllPolls();
@@ -13,6 +15,15 @@ router.get("/:id", async (req, res) => {
     return res.status(404).json({ error: "poll not found" });
   }
   res.status(200).json(poll);
+});
+
+router.post("/", async (req, res) => {
+  const { error, value } = schemas.createPollSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json(error.details);
+  }
+  const createPoll = await services.createPoll(value);
+  res.status(201).json(createPoll);
 });
 
 router.delete("/:id", async (req, res) => {

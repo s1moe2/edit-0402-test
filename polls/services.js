@@ -21,6 +21,15 @@ async function getAllPolls() {
   }
 }
 
+async function createPoll(value) {
+  try {
+    return await db.getDB().collection(db.pollsCollection).insertOne(value);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 async function deletePollById(pollId) {
   try {
     const result = await db
@@ -39,4 +48,5 @@ module.exports = {
   getPollById,
   getAllPolls,
   deletePollById,
+  createPoll,
 };

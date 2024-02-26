@@ -38,7 +38,7 @@ Estamos a trabalhar no backend de uma app de polls. Uma poll é constituída por
 
 Tarefas:
 #1
-Implementar um endpoint que permita obter os detalhes de uma poll (por ID).
+Implementar um endpoint que permita obter os detalhes de uma poll (por ID). :)
 
 #2
 Implementar um endpoint que permita criar uma poll. Uma poll é constituida por uma pergunta e uma lista de opções.
