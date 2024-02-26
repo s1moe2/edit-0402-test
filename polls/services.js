@@ -1,5 +1,14 @@
 const db = require("../db/mongodb");
 
+async function createPoll(value) {
+  try {
+    return await db.getDB.collection(db.pollsCollection).insertOne(value);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 async function getPollById(pollId) {
   try {
     return await db
@@ -11,6 +20,8 @@ async function getPollById(pollId) {
     return null;
   }
 }
+
+async;
 
 async function getAllPolls() {
   try {
@@ -39,4 +50,5 @@ module.exports = {
   getPollById,
   getAllPolls,
   deletePollById,
+  createPoll,
 };

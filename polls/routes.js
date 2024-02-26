@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const services = require("./services");
+const { pollsCollection } = require("../db/mongodb");
 
 router.get("/", async (req, res) => {
   const polls = await services.getAllPolls();
@@ -13,6 +14,16 @@ router.get("/:id", async (req, res) => {
     return res.status(404).json({ error: "poll not found" });
   }
   res.status(200).json(poll);
+});
+
+router.post("/creat/:id", async (req, res) => {
+  const { error, value } = await schemas.pollsCollection.validate(req.body);
+  if (error) {
+    return res.status(400).json(error.details);
+  }
+
+  const creatPoll = await services.creatPoll(value);
+  res.status(201).json(creatPoll);
 });
 
 router.delete("/:id", async (req, res) => {
