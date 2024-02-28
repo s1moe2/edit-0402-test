@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const services = require("./services");
-const { isSchema } = require("joi");
+const { isSchema, options } = require("joi");
 const schemas = require("./schemas");
 
 router.get("/", async (req, res) => {
@@ -22,8 +22,30 @@ router.post("/", async (req, res) => {
   if (error) {
     return res.status(400).json(error.details);
   }
-  const createPoll = await services.createPoll(value);
+
+  value.options = value.options.map((option) => ({ option, votes: 0 }));
+
+  const createPoll = await services.createPoll(value, options);
   res.status(201).json(createPoll);
+});
+
+router.put("/:id/vote", async (req, res) => {
+  const pollId = req.params.id;
+  const option = req.body.option;
+
+  const { error, value } = schemas.voteSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json(error.details);
+  }
+  const poll = await services.getPollById(pollId);
+  if (!poll) {
+    return res.status(404).json({ error: "poll not found" });
+  }
+  const uptadeResult = await services.votePoll(pollId, option);
+  if (!uptadeResult) {
+    return res.status(500).json({ error: "failed to vote" });
+  }
+  res.status(200).json({ message: "voted!" });
 });
 
 router.delete("/:id", async (req, res) => {

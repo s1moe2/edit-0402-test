@@ -41,7 +41,7 @@ Tarefas:
 Implementar um endpoint que permita obter os detalhes de uma poll (por ID). :)
 
 #2
-Implementar um endpoint que permita criar uma poll. Uma poll é constituida por uma pergunta e uma lista de opções.
+Implementar um endpoint que permita criar uma poll. Uma poll é constituida por uma pergunta e uma lista de opções. :)
 
 #3
 Implementar um endpoint que permita votar numa opção de uma poll.
