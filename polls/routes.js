@@ -21,6 +21,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", middle.auth, async (req, res) => {
+  // tarefa 6 tentiva de resoluçao
   try {
     const { title, options, deadline } = req.body;
 
@@ -51,7 +52,7 @@ router.post("/", middle.auth, async (req, res) => {
     console.error("Erro creating poll:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+}); //tarefa 6 termina aqui
 
 //tarefa 2
 router.post("/", middle.auth, async (req, res) => {
