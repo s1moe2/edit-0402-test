@@ -41,8 +41,6 @@ async function getPollById(pollId) {
   }
 }
 
-async;
-
 async function getAllPolls() {
   try {
     return await db.getDB().collection(db.pollsCollection).find({}).toArray();

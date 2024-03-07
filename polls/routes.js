@@ -4,6 +4,7 @@ const services = require("./services");
 const { pollsCollection } = require("../db/mongodb");
 const { isSchema } = require("joi");
 const { createPollSchema, voteSchema } = require("./schemas");
+const middle = require("../middleware"); //tarefa 4 criada
 
 router.get("/", async (req, res) => {
   const polls = await services.getAllPolls();
@@ -18,8 +19,8 @@ router.get("/:id", async (req, res) => {
   res.status(200).json(poll);
 });
 
-//tarefa 2 Poll criada
-router.post("/", async (req, res) => {
+//tarefa 2
+router.post("/", middle.auth, async (req, res) => {
   const { error, value } = createPollSchema.validate(req.body);
   if (error) {
     console.log("erro na validação", error);
@@ -45,7 +46,7 @@ router.post("/", async (req, res) => {
 });
 
 //tarefa 3
-router.post("/:pollId/vote", async (req, res) => {
+router.post("/:pollId/vote", middle.auth, async (req, res) => {
   const { error, value } = voteSchema.validate(req.body);
   if (error) {
     return res.status(404).json(error.details);
@@ -70,7 +71,7 @@ router.post("/:pollId/vote", async (req, res) => {
   res.status(200).json(updatedPoll);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", middle.auth, async (req, res) => {
   const pollId = req.params.id;
 
   const poll = await services.getPollById(pollId);
