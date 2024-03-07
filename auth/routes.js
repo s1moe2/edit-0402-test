@@ -22,6 +22,18 @@ router.post("/signin", async (req, res) => {
     value.password,
     user.password
   );
+  // tarefa 7//
+  if (user.attemptNumber >= 3) {
+    return res
+      .status(401)
+      .json({ error: "Exceeded the number of attempts. blocked user!" });
+  }
+  if (isValidPwd) {
+    services.updatedAttempt(value.email, 0);
+  } else {
+    const attemptValue = user.attemptNumber + 1;
+    services.updatedAttempt(value.email, attemptValue);
+  }
   if (!isValidPwd) {
     return res.status(401).json({ error: "unauthorized" });
   }

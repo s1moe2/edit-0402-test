@@ -70,6 +70,12 @@ function validateAccessToken(token) {
   }
 }
 
+function updatedAttempt(email, attemptNumber) {
+  db.getDB()
+    .collection(db.usersCollection)
+    .updateOne({ email: email }, { $set: { attemptNumber: attemptNumber } });
+}
+
 module.exports = {
   findUserByID,
   findUserByEmail,
@@ -77,4 +83,5 @@ module.exports = {
   createUser,
   generateAccessToken,
   validateAccessToken,
+  updatedAttempt,
 };

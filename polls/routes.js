@@ -20,40 +20,6 @@ router.get("/:id", async (req, res) => {
   res.status(200).json(poll);
 });
 
-router.post("/", middle.auth, async (req, res) => {
-  // tarefa 6 tentiva de resoluçao
-  try {
-    const { title, options, deadline } = req.body;
-
-    const validationResult = createPollSchema.validate({
-      title,
-      options,
-      deadline,
-    });
-
-    if (validationResult.error) {
-      return res
-        .status(400)
-        .json({ error: validationResult.error.details[0].message });
-    }
-
-    const currentDateTime = new Date();
-    const pollDeadline = new Date(deadline);
-
-    if (currentDateTime > pollDeadline) {
-      return res
-        .status(400)
-        .json({ error: "A data limite para votar expirou!" });
-    }
-
-    const newpoll = await services.createPoll({ title, options, deadline });
-    res.status(201).json(newpoll);
-  } catch (error) {
-    console.error("Erro creating poll:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}); //tarefa 6 termina aqui
-
 //tarefa 2
 router.post("/", middle.auth, async (req, res) => {
   const { error, value } = createPollSchema.validate(req.body);
@@ -74,6 +40,7 @@ router.post("/", middle.auth, async (req, res) => {
   const createPollResult = await services.createPoll({
     question: value.question,
     options: value.options,
+    deadline: value.deadline,
   });
 
   const result = await services.getPollById(createPollResult.insertedId);
@@ -96,6 +63,12 @@ router.post("/:pollId/vote", middle.auth, async (req, res) => {
   );
   if (!optionExists) {
     return res.status(400).json({ error: "invalid option" });
+  }
+  const currentDateTime = new Date();
+  const pollDeadline = new Date(poll.deadline); // tarefa 6
+
+  if (currentDateTime > pollDeadline) {
+    return res.status(400).json({ error: "A data limite para votar expirou!" });
   }
 
   const updatedPoll = await services.voteOption(
