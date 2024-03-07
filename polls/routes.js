@@ -10,6 +10,7 @@ router.get("/", async (req, res) => {
   const polls = await services.getAllPolls();
   res.status(200).json(polls);
 });
+
 // tarefa 1
 router.get("/:id", async (req, res) => {
   const poll = await services.getPollById(req.params.id);
@@ -17,6 +18,39 @@ router.get("/:id", async (req, res) => {
     return res.status(404).json({ error: "poll not found" });
   }
   res.status(200).json(poll);
+});
+
+router.post("/", middle.auth, async (req, res) => {
+  try {
+    const { title, options, deadline } = req.body;
+
+    const validationResult = createPollSchema.validate({
+      title,
+      options,
+      deadline,
+    });
+
+    if (validationResult.error) {
+      return res
+        .status(400)
+        .json({ error: validationResult.error.details[0].message });
+    }
+
+    const currentDateTime = new Date();
+    const pollDeadline = new Date(deadline);
+
+    if (currentDateTime > pollDeadline) {
+      return res
+        .status(400)
+        .json({ error: "A data limite para votar expirou!" });
+    }
+
+    const newpoll = await services.createPoll({ title, options, deadline });
+    res.status(201).json(newpoll);
+  } catch (error) {
+    console.error("Erro creating poll:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 //tarefa 2
