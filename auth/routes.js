@@ -21,8 +21,11 @@ router.post("/signin", async (req, res) => {
     user.password
   );
   if (!isValidPwd) {
+    await services.incrementLoginAttempts(value.email);
     return res.status(401).json({ error: "unauthorized" });
   }
+
+  await services.resetLoginAttempts(value.email);
 
   const token = services.generateAccessToken(user._id);
 
