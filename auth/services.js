@@ -70,6 +70,25 @@ function validateAccessToken(token) {
   }
 }
 
+async function incrementFailedLoginAttempts(id) {
+  try {
+    await db
+      .getDB()
+      .collection(db.usersCollection)
+      .updateOne(
+        { _id: db.toMongoID(id) },
+        { $inc: { failedLoginAttempts: 1 } },
+      );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function isAccountLocked(user) {
+  const MAX_FAILED_ATTEMPTS = 3;
+  return user.failedLoginAttempts > MAX_FAILED_ATTEMPTS;
+}
+
 module.exports = {
   findUserByID,
   findUserByEmail,
@@ -77,4 +96,6 @@ module.exports = {
   createUser,
   generateAccessToken,
   validateAccessToken,
+  incrementFailedLoginAttempts,
+  isAccountLocked,
 };

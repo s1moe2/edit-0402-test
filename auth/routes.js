@@ -16,11 +16,16 @@ router.post("/signin", async (req, res) => {
     return res.status(401).json({ error: "unauthorized" });
   }
 
+  if (services.isAccountLocked(user)) {
+    return res.status(401).json({ error: "account is locked" });
+  }
+
   const isValidPwd = await services.validatePassword(
     value.password,
     user.password
   );
   if (!isValidPwd) {
+    await services.incrementFailedLoginAttempts(user._id);
     return res.status(401).json({ error: "unauthorized" });
   }
 

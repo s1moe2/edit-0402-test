@@ -1,11 +1,13 @@
 require("dotenv").config();
 const express = require("express");
+const logger = require("pino-http")();
 const db = require("./db/mongodb");
 const auth = require("./auth/routes");
 const polls = require("./polls/routes");
 
 const app = express();
 app.use(express.json());
+app.use(logger);
 app.use("/auth", auth);
 app.use("/polls", polls);
 
